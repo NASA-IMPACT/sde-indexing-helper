@@ -37,4 +37,6 @@ urlpatterns = [
     # Update an existing CandidateURL instance: /candidate-urls/{id}/
     # Delete an existing CandidateURL instance: /candidate-urls/{id}/
     path("api/", include(router.urls)),
+    path("api/model_inference", views.model_inference, name="model_inference"),
+    path("api/update_predictions", views.update_predictions, name="update_predictions"),
 ]

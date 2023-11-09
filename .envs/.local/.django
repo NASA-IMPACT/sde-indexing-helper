@@ -27,3 +27,9 @@ DJANGO_AWS_STORAGE_BUCKET_NAME=''
 GITHUB_ACCESS_TOKEN=''
 SINEQUA_CONFIGS_GITHUB_REPO=''
 GITHUB_BRANCH_FOR_WEBAPP=''
+
+#Airflow
+AIRFLOW_USERNAME = ''
+AIRFLOW_PASSWORD = ''
+AIRFLOW_DAG_ENDPOINT = 'http://airflow-webserver-1185199286.us-west-2.elb.amazonaws.com/api/v1/dags/chunck_urls_to_process/dagRuns'
+

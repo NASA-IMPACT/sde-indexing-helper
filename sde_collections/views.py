@@ -1,8 +1,10 @@
 import re
+import requests
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import models
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -31,8 +33,65 @@ from .serializers import (
     TitlePatternSerializer,
 )
 from .tasks import push_to_github_task
-
+from django.conf import settings
+import json 
 User = get_user_model()
+
+def update_predictions(request):
+    if request.method == "POST":
+        response_dict=json.loads(request.body)
+        out_data=response_dict['out']
+        collection_id=response_dict['collection_id']
+        prediction,pdf_lists=out_data[0],out_data[1]
+        candidate_urls = CandidateURL.objects.filter(
+        collection_id=Collection.objects.get(pk=collection_id),
+        ).exclude(document_type__in=[1, 2, 3, 4, 5, 6])
+        update_inference(candidate_urls, prediction, pdf_lists)
+        return HttpResponse(status=204)
+
+    
+
+def update_inference(candidate_urls,prediction,pdf_lists):
+    # Update document_type for corresponding URLs
+        for candidate_url in candidate_urls:
+            new_document_type = prediction.get(candidate_url.url)
+            if new_document_type is not None:
+                candidate_url.document_type = new_document_type
+                candidate_url.inferenced_by = "model"
+                candidate_url.save()  # Updating the changes in candidateurl table
+                # Create a new DocumentTypePattern entry for each URL and its document_type
+                DocumentTypePattern.objects.create(
+                    collection_id=candidate_url.collection_id,
+                    match_pattern=candidate_url.url.replace("https://", ""),
+                    match_pattern_type=DocumentTypePattern.MatchPatternTypeChoices.INDIVIDUAL_URL,
+                    document_type=new_document_type,
+                )  # Adding the new record in documenttypepattern table
+            if (
+                candidate_url.url in pdf_lists
+            ):  # flagging created for url with pdf response
+                candidate_url.is_pdf = True
+                candidate_url.save()
+
+def model_inference(request):
+    AIRFLOW_USERNAME = settings.AIRFLOW_USERNAME
+    AIRFLOW_PASSWORD = settings.AIRFLOW_PASSWORD
+    AIRFLOW_DAG_ENDPOINT = settings.AIRFLOW_DAG_ENDPOINT
+    if request.method == "POST":
+        # print("request",request.POST)
+        collection_id = int(request.POST.get("collection_id"))
+        candidate_urls = CandidateURL.objects.filter(
+            collection_id=Collection.objects.get(pk=int(collection_id)),
+        ).exclude(document_type__in=[1, 2, 3, 4, 5, 6])
+        to_infer_url_list = [candidate_url.url for candidate_url in candidate_urls]
+        # if to_infer_url_list:# Define your configuration data as a dictionary
+        #     configuration_data = {"conf":{"urls":to_infer_url_list,
+        #         "chunk_size": 24},"dag_run_id":f"collection_{collection_id}"
+        #     }
+        #     # Create a session with the Basic Auth credentials
+        #     session = requests.Session()
+        #     session.auth = (username, password)
+        #     response = session.post(api_endpoint, json=configuration_data)
+        return HttpResponse(status=204)
 
 
 class CollectionListView(LoginRequiredMixin, ListView):

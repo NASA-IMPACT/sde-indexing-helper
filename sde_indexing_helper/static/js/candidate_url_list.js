@@ -126,6 +126,7 @@ function initializeDataTable() {
 }
 
 function setupClickHandlers() {
+    handleInferenceButton();
     handleAddNewPatternClick();
 
     handleCreateDocumentTypePatternButton();
@@ -222,8 +223,9 @@ function getDocumentTypeColumn() {
                 5: 'Missions and Instruments',
                 6: 'Training and Education',
             };
+            var inferenceValue = row['inferenced_by'];
             button_text = data ? dict[data] : 'Select';
-            button_color = data ? 'btn-success' : 'btn-secondary';
+            button_color = inferenceValue === 'user' ? 'btn-success' : (inferenceValue === 'model' ? 'btn-primary' : 'btn-secondary');
             return `
             <div class="dropdown document_type_dropdown" data-match-pattern=${remove_protocol(row['url'])}>
               <button class="btn ${button_color} btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -259,6 +261,13 @@ function handleCreateTitlePatternButton() {
         $modal = $('#titlePatternModal').modal();
     });
 }
+
+//handling action when inference button is hit
+function handleInferenceButton() {
+    $("body").on("click", ".create_model_button", function (e) {
+        e.preventDefault(); // Prevent the default button behavior
+        postInferenceButton(collection_id);
+});}
 
 function handleDocumentTypeSelect() {
     $("body").on("click", ".document_type_select", function () {
@@ -355,6 +364,32 @@ function postDocumentTypePatterns(match_pattern, match_pattern_type, document_ty
             toastr.error(errorMessage);
         }
     });
+}
+
+// runs the script to get predictions for given list of uninferenced urls
+function postInferenceButton(collection_id){
+    console.log("The collection id is",collection_id);
+    $.blockUI({ message: '<div id="loadingMessage"><h3><b>Model Inference taking place...</b></h3></div>'});
+    $.ajax({
+    url: '/api/model_inference',
+    type: 'POST',
+    headers: {
+        'X-Requested-With': 'XMLHttpRequest',  // Include this header
+    },
+    data: {
+        csrfmiddlewaretoken: csrftoken,"collection_id":collection_id
+    },
+    success: function() {
+        $.unblockUI();
+        location.reload();
+        // Unblock the UI after the AJAX call is complete
+    },
+    error: function(xhr, status, error) {
+        var errorMessage = xhr.responseText;
+        toastr.error(errorMessage);
+        console.log("I am in some error")
+    }
+});
 }
 
 
