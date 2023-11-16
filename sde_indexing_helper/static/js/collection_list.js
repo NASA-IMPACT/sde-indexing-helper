@@ -66,6 +66,15 @@ let table = $('#collection_table').DataTable({
             },
             targets: [3]
         }
+    ],
+    "columns": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        { width: "25%", className: 'editable' },
+        { width: "25%", className: 'editable' },
     ]
 });
 

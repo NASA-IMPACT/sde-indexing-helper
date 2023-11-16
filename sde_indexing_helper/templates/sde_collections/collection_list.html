@@ -16,13 +16,12 @@
         <thead>
             <tr>
                 <th class="text-center">Name</th>
-                <th class="text-center">URL</th>
                 <th class="text-center">Division</th>
                 <th class="text-center">Candidate URLs</th>
                 <th class="text-center">Workflow Status</th>
-                <th class="text-center">Curator</th>
-                <th class="text-center">Connector Type</th>
-                <th class="text-center">Config Folder</th>
+                <th class="text-center">Spreadsheet Status</th>
+                <th class="text-center">Current Action Needed</th>
+                <th class="text-center">Notes</th>
             </tr>
         </thead>
         <tbody>
@@ -30,11 +29,6 @@
                 <tr>
                     <td>
                         <a href="{% url 'sde_collections:detail' collection.pk %}">{{ collection.name }} <i class="material-icons">chevron_right</i></a>
-                    </td>
-                    <td>
-                        {% if collection.url %}
-                            {{ collection.url }}<a target="_blank" href=" {{ collection.url }} "> <i class="material-icons">open_in_new</i></a>
-                        {% endif %}
                     </td>
                     <td>{{ collection.get_division_display }}</td>
                     <td>
@@ -63,27 +57,27 @@
                         </div>
                     </td>
                     <td>
-                        <div class="dropdown curator_dropdown"
+                        <div class="dropdown workflow_status_dropdown"
                              data-match-pattern
                              remove_protocol
                              row
                              url>
-                            <button class="btn {% if collection.curated_by %} btn-success {% else %} btn-dark {% endif %} btn-sm dropdown-toggle"
+                            <button class="btn {{ collection.workflow_status_button_color }} btn-sm dropdown-toggle"
                                     type="button"
-                                    id="curator-button-{{ collection.id }}"
+                                    id="workflow-status-button-{{ collection.id }}"
                                     data-toggle="dropdown"
                                     aria-haspopup="true"
-                                    aria-expanded="false">{{ collection.curated_by }}</button>
+                                    aria-expanded="false">{{ collection.get_spreadsheet_status_display }}</button>
                             <div class="dropdown-menu"
-                                 aria-labelledby="curator-button-{{ collection.id }}">
-                                {% for curator in curators %}
-                                    <a class="dropdown-item curator_select" value="{{ curator.pk }}" data-collection-id={{ collection.id }}>{{ curator.username }}</a>
+                                 aria-labelledby="workflow-status-button-{{ collection.id }}">
+                                {% for choice in workflow_status_choices %}
+                                    <a class="dropdown-item workflow_status_select" value="{{ choice }}" data-collection-id={{ collection.id }}>{{ choice.label }}</a>
                                 {% endfor %}
                             </div>
                         </div>
                     </td>
-                    <td>{{ collection.get_connector_display }}</td>
-                    <td>{{ collection.config_folder }}</td>
+                    <td><textarea rows="8" class="form-control" >{{ collection.current_action_needed }}</textarea></td>
+                    <td><textarea rows="8" class="form-control" >{{ collection.final_notes }}</textarea></td>
                 </tr>
             {% endfor %}
         </tbody>
