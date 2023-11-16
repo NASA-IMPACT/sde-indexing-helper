@@ -63,6 +63,32 @@ class CurationStatusChoices(models.IntegerChoices):
         return "N/A"
 
 
+class SpreadsheetStatusChoices(models.IntegerChoices):
+    NEEDS_CURATION = 1, "needs curation"
+    NEEDS_ENGINEERING = 2, "needs engineering"
+    READY_TO_BE_REINDEXED_ON_TEST = 3, "ready to be reindexed on test"
+    INDEXING_IN_PROGRESS_ON_TEST = 4, "indexing in progress on test"
+    READY_TO_BE_QUALITY_CHECKED_ON_TEST = 5, "ready to be quality checked on test"
+    READY_TO_BE_DEPLOYED_TO_PROD = 6, "ready to be deployed to prod"
+    INDEXING_IN_PROGRESS_ON_PROD = 7, "indexing in progress on prod"
+    READY_FOR_FINAL_QUALITY_CHECK = 8, "ready for final quality check"
+    FINISHED = 9, "finished!!!"
+    IGNORE = 10, "ignore"
+    NEED_CLARIFICATION = 11, "need clarification"
+    DELETE_FROM_EVERYWHERE = 12, "delete from everywhere"
+    INDEXING_PROBLEM_ON_TEST = 13, "indexing problem on test"
+    INDEXING_PROBLEM_ON_PROD = 14, "indexing problem on prod"
+    TURN_OFF = 15, "turn off"
+    FINISHED_CURATION = 16, "finished curation"
+
+    @classmethod
+    def get_status_string(cls, value):
+        for choice in cls.choices:
+            if choice[0] == value:
+                return choice[1]
+        return "N/A"
+
+
 class WorkflowStatusChoices(models.IntegerChoices):
     # someone has started making a new collection, but they aren't done
     RESEARCH_IN_PROGRESS = 1, "Research in Progress"

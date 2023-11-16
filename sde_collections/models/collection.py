@@ -15,6 +15,7 @@ from .collection_choice_fields import (
     Divisions,
     DocumentTypes,
     SourceChoices,
+    SpreadsheetStatusChoices,
     UpdateFrequencies,
     WorkflowStatusChoices,
 )
@@ -92,6 +93,14 @@ class Collection(models.Model):
     )
     curation_started = models.DateTimeField("Curation Started", null=True, blank=True)
     has_sinequa_config = models.BooleanField(default=True)
+
+    final_notes = models.TextField(default="", blank=True)
+    spreadsheet_status = models.IntegerField(
+        choices=SpreadsheetStatusChoices.choices,
+        default=SpreadsheetStatusChoices.NEEDS_ENGINEERING,
+    )
+    current_action_needed = models.TextField(default="", blank=True)
+    indexing_log = models.TextField(default="", blank=True)
 
     class Meta:
         """Meta definition for Collection."""
