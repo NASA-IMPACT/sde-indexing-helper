@@ -80,6 +80,7 @@ class SpreadsheetStatusChoices(models.IntegerChoices):
     INDEXING_PROBLEM_ON_PROD = 14, "indexing problem on prod"
     TURN_OFF = 15, "turn off"
     FINISHED_CURATION = 16, "finished curation"
+    OUT_OF_PROCESS = 17, "out of process"
 
     @classmethod
     def get_status_string(cls, value):
