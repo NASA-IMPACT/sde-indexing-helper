@@ -93,6 +93,9 @@ class BasePatternSerializer(serializers.ModelSerializer):
     match_pattern_type_display = serializers.CharField(
         source="get_match_pattern_type_display", read_only=True
     )
+    pattern_source_display = serializers.CharField(
+        source="get_pattern_source_display", read_only=True
+    )
     candidate_urls_count = serializers.SerializerMethodField(read_only=True)
 
     def get_candidate_urls_count(self, instance):
@@ -106,6 +109,7 @@ class BasePatternSerializer(serializers.ModelSerializer):
             "match_pattern_type",
             "match_pattern_type_display",
             "candidate_urls_count",
+            "pattern_source_display",
         )
         abstract = True
 

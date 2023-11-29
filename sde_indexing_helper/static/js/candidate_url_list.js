@@ -70,6 +70,7 @@ function initializeDataTable() {
             { "data": "match_pattern_type_display", "class": "text-center", "sortable": false },
             { "data": "reason", "class": "text-center", "sortable": false },
             { "data": "candidate_urls_count", "class": "text-center", "sortable": false },
+            { "data": "pattern_source_display", "class": "text-center", "sortable": false },
             {
                 "data": null,
                 "sortable": false,
@@ -91,6 +92,7 @@ function initializeDataTable() {
             { "data": "match_pattern_type_display", "class": "text-center", "sortable": false },
             { "data": "title_pattern" },
             { "data": "candidate_urls_count", "class": "text-center", "sortable": false },
+            { "data": "pattern_source_display", "class": "text-center", "sortable": false },
             {
                 "data": null,
                 "sortable": false,
@@ -112,6 +114,7 @@ function initializeDataTable() {
             { "data": "match_pattern_type_display", "class": "text-center", "sortable": false },
             { "data": "document_type_display" },
             { "data": "candidate_urls_count", "class": "text-center", "sortable": false },
+            { "data": "pattern_source_display", "class": "text-center", "sortable": false },
             {
                 "data": null,
                 "sortable": false,
@@ -195,7 +198,7 @@ function getVisitedColumn(true_icon, false_icon) {
     }
 }
 
-function getIsPresentOnTestColumn(true_icon, false_icon){
+function getIsPresentOnTestColumn(true_icon, false_icon) {
     return {
         "data": "present_on_test", "class": "col-1 text-center", "render": function (data, type, row) {
             return (data === true) ? true_icon : false_icon
@@ -203,7 +206,7 @@ function getIsPresentOnTestColumn(true_icon, false_icon){
     }
 }
 
-function getIsPresentInProductionColumn(true_icon, false_icon){
+function getIsPresentInProductionColumn(true_icon, false_icon) {
     return {
         "data": "present_on_prod", "class": "col-1 text-center", "render": function (data, type, row) {
             return (data === true) ? true_icon : false_icon
@@ -315,8 +318,8 @@ function handleNewTitleChange() {
         var match_pattern_type = $(this).data('match-pattern-type');
         var candidate_urls_count = $(this).data('candidate-urls-count');
         if (!title_pattern) {
-            deletePattern(`/api/title-patterns/${generated_title_id}/`, data_type = 'Title Pattern', url_type = match_pattern_type, candidate_urls_count= candidate_urls_count);
-        }else{
+            deletePattern(`/api/title-patterns/${generated_title_id}/`, data_type = 'Title Pattern', url_type = match_pattern_type, candidate_urls_count = candidate_urls_count);
+        } else {
             postTitlePatterns(match_pattern, title_pattern, match_pattern_type = 1, title_pattern_type = 1);
         }
     });
@@ -427,7 +430,7 @@ function postVisited(url) {
     });
 }
 
-function deletePattern(url, data_type, url_type=null, candidate_urls_count=null) {
+function deletePattern(url, data_type, url_type = null, candidate_urls_count = null) {
     if (url_type === MULTI_URL_PATTERN) {
         var confirmDelete = confirm(`YOU ARE ATTEMPTING TO DELETE A MULTI-URL PATTERN. THIS WILL AFFECT ${candidate_urls_count} URLs. \n\nAre you sure you want to do this? Currently there is no way to delete a single URL from a Multi-URL pattern`);
     } else {
