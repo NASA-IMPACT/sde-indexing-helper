@@ -5,6 +5,11 @@ from django.db import models
 from .collection_choice_fields import DocumentTypes
 
 
+class PatternSourceChoices(models.IntegerChoices):
+    WEBAPP = 1, "Webapp"
+    GITHUB = 2, "GitHUb"
+
+
 class BaseMatchPattern(models.Model):
     class MatchPatternTypeChoices(models.IntegerChoices):
         INDIVIDUAL_URL = 1, "Individual URL Pattern"
@@ -27,6 +32,9 @@ class BaseMatchPattern(models.Model):
     candidate_urls = models.ManyToManyField(
         "CandidateURL",
         related_name="%(class)s_urls",
+    )
+    pattern_source = models.IntegerField(
+        choices=PatternSourceChoices.choices, default=1
     )
 
     def matched_urls(self):
