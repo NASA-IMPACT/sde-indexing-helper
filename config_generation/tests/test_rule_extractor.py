@@ -55,18 +55,58 @@ def test_extract_title_rules():
     assert result == expected_output
 
 
-# def test_extract_exclude_rules():
-#     # Arrange
-#     with open("config_generation/tests/config_file_with_rules.xml", "r") as file:
-#         xml_string = file.read()
-#     expected_output = ["rule1", "rule2", "rule3"]  # replace with your expected output
-#     extractor = RuleExtractor(xml_string)
+def test_extract_exclude_rules():
+    # Arrange
+    with open("config_generation/tests/config_file_with_rules.xml") as file:
+        xml_string = file.read()
+    expected_output = [
+        {
+            "match_pattern": "https://eospso.nasa.gov/content/our-changing-planet-view-space*",
+            "pattern_source": 2,
+        },
+        {
+            "match_pattern": "https://eospso.nasa.gov/content/our-changing-planet-view-space*",
+            "pattern_source": 2,
+        },
+        {
+            "match_pattern": "https://eospso.nasa.gov/content/all-missions*",
+            "pattern_source": 2,
+        },
+    ]
+    extractor = RuleExtractor(xml_string)
 
-#     # Act
-#     result = extractor._extract_exclude_rules()
+    # Act
+    result = extractor._extract_exclude_rules()
 
-#     # Assert
-#     assert result == expected_output
+    # Assert
+    assert result == expected_output
+
+
+def test_extract_include_rules():
+    # Arrange
+    with open("config_generation/tests/config_file_with_rules.xml") as file:
+        xml_string = file.read()
+    expected_output = [
+        {
+            "match_pattern": "https://eospso.nasa.gov/content/our-changing-planet-view-space*",
+            "pattern_source": 2,
+        },
+        {
+            "match_pattern": "https://eospso.nasa.gov/content/our-changing-planet-view-space*",
+            "pattern_source": 2,
+        },
+        {
+            "match_pattern": "https://eospso.nasa.gov/content/all-missions*",
+            "pattern_source": 2,
+        },
+    ]
+    extractor = RuleExtractor(xml_string)
+
+    # Act
+    result = extractor._extract_include_rules()
+
+    # Assert
+    assert result == expected_output
 
 
 def test_extract_document_type_rules():

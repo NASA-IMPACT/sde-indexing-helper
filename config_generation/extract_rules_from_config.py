@@ -43,16 +43,51 @@ class RuleExtractor:
             for mapping in mappings
         ]
 
-        print(rules)
-
         return rules
 
     def _extract_exclude_rules(self):
-        # config = xmltodict.parse(self.config_xml_string)
+        config = xmltodict.parse(self.config_xml_string)
 
-        rules = []
+        exclude_tags = ["UrlIndexExcluded", "UrlLinkExcluded"]
 
-        return rules
+        all_rules = []
+
+        for tag in exclude_tags:
+            if type(config["Sinequa"][tag]) == str:
+                config["Sinequa"][tag] = [config["Sinequa"][tag]]
+
+            rules = [
+                {
+                    "match_pattern": excluded_url,
+                    "pattern_source": 2,
+                }
+                for excluded_url in config["Sinequa"][tag]
+            ]
+            all_rules.extend(rules)
+
+        return all_rules
+
+    def _extract_include_rules(self):
+        config = xmltodict.parse(self.config_xml_string)
+
+        include_tags = ["UrlIndexIncluded", "UrlLinkIncluded"]
+
+        all_rules = []
+
+        for tag in include_tags:
+            if type(config["Sinequa"][tag]) == str:
+                config["Sinequa"][tag] = [config["Sinequa"][tag]]
+
+            rules = [
+                {
+                    "match_pattern": included_url,
+                    "pattern_source": 2,
+                }
+                for included_url in config["Sinequa"][tag]
+            ]
+            all_rules.extend(rules)
+
+        return all_rules
 
     def _extract_document_type_rules(self):
         config = xmltodict.parse(self.config_xml_string)
@@ -73,8 +108,6 @@ class RuleExtractor:
             }
             for mapping in mappings
         ]
-
-        print(rules)
 
         return rules
 

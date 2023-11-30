@@ -280,6 +280,12 @@
     <Url>https://www.earthdata.nasa.gov/apt/about</Url>
     <Url>https://www.earthdata.nasa.gov/apt/documents</Url>
     <Url>https://www.earthdata.nasa.gov/apt/user-guide</Url>
+    <UrlLinkExcluded>https://eospso.nasa.gov/content/our-changing-planet-view-space*</UrlLinkExcluded>
+    <UrlLinkExcluded>https://eospso.nasa.gov/content/all-missions*</UrlLinkExcluded>
+    <UrlIndexExcluded>https://eospso.nasa.gov/content/our-changing-planet-view-space*</UrlIndexExcluded>
+    <UrlLinkIncluded>https://eospso.nasa.gov/content/our-changing-planet-view-space*</UrlLinkIncluded>
+    <UrlLinkIncluded>https://eospso.nasa.gov/content/all-missions*</UrlLinkIncluded>
+    <UrlIndexIncluded>https://eospso.nasa.gov/content/our-changing-planet-view-space*</UrlIndexIncluded>
     <Mapping>
         <Name>id</Name>
         <Value>doc.url1</Value>
