@@ -83,6 +83,26 @@ function initializeDataTable() {
         ]
     });
 
+    var include_patterns_table = $('#include_patterns_table').DataTable({
+        "scrollY": true,
+        "serverSide": true,
+        "ajax": `/api/include-patterns/?format=datatables&collection_id=${collection_id}`,
+        "columns": [
+            { "data": "match_pattern" },
+            { "data": "match_pattern_type_display", "class": "text-center", "sortable": false },
+            { "data": "candidate_urls_count", "class": "text-center", "sortable": false },
+            {
+                "data": null,
+                "sortable": false,
+                "class": "text-center",
+                "render": function (data, type, row) {
+                    return `<button class="btn btn-danger btn-sm delete-include-pattern-button" data-row-id="${row['id']}"><i class="material-icons">delete</i></button >`;
+                }
+            },
+            { "data": "id", "visible": false, "searchable": false },
+        ]
+    });
+
     var title_patterns_table = $('#title_patterns_table').DataTable({
         "scrollY": true,
         "serverSide": true,
@@ -133,10 +153,12 @@ function setupClickHandlers() {
 
     handleCreateDocumentTypePatternButton();
     handleCreateExcludePatternButton();
+    handleCreateIncludePatternButton();
     handleCreateTitlePatternButton();
 
     handleDeleteDocumentTypeButtonClick();
     handleDeleteExcludePatternButtonClick();
+    handleDeleteIncludePatternButtonClick();
     handleDeleteTitlePatternButtonClick();
 
     handleDocumentTypeSelect()
@@ -257,6 +279,12 @@ function handleCreateExcludePatternButton() {
     });
 }
 
+function handleCreateIncludePatternButton() {
+    $("body").on("click", ".create_include_pattern_button", function () {
+        $modal = $('#includePatternModal').modal();
+    });
+}
+
 function handleCreateTitlePatternButton() {
     $("body").on("click", ".create_title_pattern_button", function () {
         $modal = $('#titlePatternModal').modal();
@@ -286,6 +314,13 @@ function handleDeleteExcludePatternButtonClick() {
     $("body").on("click", ".delete-exclude-pattern-button", function () {
         row_id = $(this).data('row-id');
         deletePattern(`/api/exclude-patterns/${row_id}/`, data_type = 'Exclude Pattern');
+    });
+}
+
+function handleDeleteIncludePatternButtonClick() {
+    $("body").on("click", ".delete-include-pattern-button", function () {
+        row_id = $(this).data('row-id');
+        deletePattern(`/api/include-patterns/${row_id}/`, data_type = 'Include Pattern');
     });
 }
 
@@ -387,6 +422,32 @@ function postExcludePatterns(match_pattern, match_pattern_type = 0) {
     });
 }
 
+function postIncludePatterns(match_pattern, match_pattern_type = 0) {
+    if (!match_pattern) {
+        toastr.error('Please highlight a pattern to include.');
+        return;
+    }
+
+    $.ajax({
+        url: '/api/include-patterns/',
+        type: "POST",
+        data: {
+            collection: collection_id,
+            match_pattern: match_pattern,
+            match_pattern_type: match_pattern_type,
+            csrfmiddlewaretoken: csrftoken
+        },
+        success: function (data) {
+            $('#candidate_urls_table').DataTable().ajax.reload();
+            $('#include_patterns_table').DataTable().ajax.reload();
+        },
+        error: function (xhr, status, error) {
+            var errorMessage = xhr.responseText;
+            toastr.error(errorMessage);
+        }
+    });
+}
+
 function postTitlePatterns(match_pattern, title_pattern, match_pattern_type = 1) {
     if (!match_pattern) {
         toastr.error('Please highlight a pattern to change the title.');
@@ -451,6 +512,7 @@ function deletePattern(url, data_type, url_type = null, candidate_urls_count = n
         success: function (data) {
             $('#candidate_urls_table').DataTable().ajax.reload();
             $('#exclude_patterns_table').DataTable().ajax.reload();
+            $('#include_patterns_table').DataTable().ajax.reload();
             $('#title_patterns_table').DataTable().ajax.reload();
             $('#document_type_patterns_table').DataTable().ajax.reload();
         }
@@ -572,6 +634,20 @@ $('#exclude_pattern_form').on('submit', function (e) {
 
     // close the modal if it is open
     $('#excludePatternModal').modal('hide');
+});
+
+$('#include_pattern_form').on('submit', function (e) {
+    e.preventDefault();
+    inputs = {};
+    input_serialized = $(this).serializeArray();
+    input_serialized.forEach(field => {
+        inputs[field.name] = field.value;
+    });
+
+    postIncludePatterns(match_pattern = inputs.match_pattern, match_pattern_type = 2);
+
+    // close the modal if it is open
+    $('#includePatternModal').modal('hide');
 });
 
 $('#title_pattern_form').on('submit', function (e) {
