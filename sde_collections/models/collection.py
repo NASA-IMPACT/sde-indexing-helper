@@ -7,6 +7,7 @@ from django.db import models
 from slugify import slugify
 
 from config_generation.db_to_xml import XmlEditor
+from config_generation.extract_rules_from_config import RuleExtractor
 
 from ..utils.github_helper import GitHubHandler
 from .collection_choice_fields import (
@@ -18,6 +19,7 @@ from .collection_choice_fields import (
     UpdateFrequencies,
     WorkflowStatusChoices,
 )
+from .pattern import DocumentTypePattern, ExcludePattern, IncludePattern, TitlePattern
 
 User = get_user_model()
 
@@ -243,6 +245,29 @@ class Collection(models.Model):
 
         updated_config_xml_string = editor.update_config_xml()
         return updated_config_xml_string
+
+    def import_rules_from_github_config(self):
+        """Import rules from the github config."""
+        if not self.config_folder:
+            return False
+
+        gh = GitHubHandler(collections=[self])
+        config_xml = gh.fetch_config_xml()
+
+        if not config_xml:
+            return False
+
+        rule_extractor = RuleExtractor(config_xml)
+        rules = rule_extractor.extract_rules()
+
+        for exclude_rules in rules["exclude"]:
+            ExcludePattern.objects.create(collection=self, **exclude_rules)
+        for include_rules in rules["include"]:
+            IncludePattern.objects.create(collection=self, **include_rules)
+        for title_rules in rules["title"]:
+            TitlePattern.objects.create(collection=self, **title_rules)
+        for document_type_rules in rules["document_type"]:
+            DocumentTypePattern.objects.create(collection=self, **document_type_rules)
 
     def _compute_config_folder_name(self) -> str:
         """
