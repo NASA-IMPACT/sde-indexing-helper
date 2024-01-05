@@ -50,7 +50,7 @@ class Api:
 
         return meaningful_response
 
-    def query(self, page: int, collection_config_folder: str = "") -> Any:
+    def query(self, page: int, collection_config_folder: str = "", collection_source: str = "SDE") -> Any:
         url = f"{self.base_url}/api/v1/search.query"
         payload = {
             "app": self.app_name,
@@ -64,8 +64,28 @@ class Api:
         }
 
         if collection_config_folder:
-            payload["query"]["advanced"]["collection"] = f"/SDE/{collection_config_folder}/"
+            payload["query"]["advanced"]["collection"] = f"/{collection_source}/{collection_config_folder}/"
 
         response = self.process_response(url, payload)
 
         return response
+
+    def get_all_urls(self, collection_config_folder: str = "", collection_source: str = "SDE") -> Any:
+        page = 1
+        row_count = 1000
+        urls_and_titles = []
+
+        while page * 1000 <= row_count + 1000:
+            print(f"getting page {page}")
+            response = self.query(page, collection_config_folder, collection_source)
+            print(f"current rowcount {response['rowCount']}")
+            row_count = response["rowCount"]
+            for document in response["records"]:
+                urls_and_titles.append(
+                    {
+                        "title": document["title"],
+                        "url": document.get("download_url", ""),
+                    }
+                )
+            page += 1
+        return urls_and_titles
