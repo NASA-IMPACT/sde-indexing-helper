@@ -138,8 +138,7 @@ class GitHubHandler:
         collection_folders = [
             collection.path
             for collection in collections
-            if ".xml"
-            not in collection.path  # to prevent source.xml from being included
+            if ".xml" not in collection.path  # to prevent source.xml from being included
         ]
         return collection_folders
 
