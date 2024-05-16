@@ -90,3 +90,6 @@
   .hideDisplay{
     display:none;
   }
+  .tableHeader{
+    background-color:#15232E !important;
+  }

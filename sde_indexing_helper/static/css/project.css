@@ -26,3 +26,20 @@
 body {
   background-color: #050E19;
 }
+
+.tableHeader{
+  background-color: #050E19;
+  color:white;
+  font-family: Roboto, sans-serif;
+  font-weight: 600 !important;
+}
+
+.textBoxStyling{
+ background-color: #15232E;
+ color:white;
+ border: 1px solid #3F4A58;
+}
+
+.selectStyling{
+  background-color:#A7BACD !important;
+}
