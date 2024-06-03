@@ -91,6 +91,8 @@ def format_slack_message(name, details, collection_id):
 
 
 def send_slack_message(message):
+    if settings.DEBUG:
+        return
     webhook_url = settings.SLACK_WEBHOOK_URL
     payload = {"text": message}
     response = requests.post(webhook_url, json=payload)
