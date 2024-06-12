@@ -1,20 +1,18 @@
 var uniqueId; //used for logic related to contents on column customization modal
 
-
 function modalContents(tableName) {
   var checkboxCount = $("#modalBody input[type='checkbox']").length;
 
   if (checkboxCount > 0 && tableName === uniqueId) {
     $modal = $("#hideShowColumnsModal").modal({
-      backdrop: 'static',
-      keyboard : true,
-    }
-    );
+      backdrop: "static",
+      keyboard: true,
+    });
     return;
   }
 
   $modal = $("#hideShowColumnsModal").modal({
-    backdrop: 'static',
+    backdrop: "static",
     keyboard: true,
   });
   var table = $(tableName).DataTable();
@@ -26,21 +24,19 @@ function modalContents(tableName) {
   table.columns().every(function (idx) {
     var column = this;
     var columnName = column.header().textContent.trim();
-    if ( columnName.length === 0) return;
+    if (columnName.length === 0) return;
     var $checkbox = $('<input type="checkbox">')
       .attr({
         id: "checkbox_" + columnName.replace(/\s+/g, "_"), // Generate a unique ID for each checkbox
         name: columnName.replace(/\s+/g, "_"), // Set name attribute for each checkbox
         value: idx,
       })
-      .prop("checked", (column.visible() ? true : false));
+      .prop("checked", column.visible() ? true : false);
     var $label = $("<label class='whiteText'>")
       .attr("for", "checkbox_" + columnName.replace(/\s+/g, "_"))
       .text(columnName);
     var $caption = $("<p class='headerDescription'>")
-      .text(
-        tableHeaderDefinitions[columnName]
-      )
+      .text(tableHeaderDefinitions[columnName])
       .attr({
         id: "caption",
       });
@@ -63,7 +59,7 @@ $("body").on("keydown", function () {
     $("#hideShowColumnsModal").modal("hide");
   }
   //Confirm modal selections via enter
-  if(event.key == "Enter" && $("#hideShowColumnsModal").is(":visible")) {
+  if (event.key == "Enter" && $("#hideShowColumnsModal").is(":visible")) {
     var table = $(uniqueId).DataTable();
     $("[id^='checkbox_']").each(function () {
       var checkboxValue = $(this).val();
@@ -75,7 +71,6 @@ $("body").on("keydown", function () {
     $("#hideShowColumnsModal").modal("hide");
   }
 });
-
 
 $("body").on("click", "#hideShowSubmitButton", function () {
   var table = $(uniqueId).DataTable();
@@ -115,7 +110,8 @@ let table = $("#collection_table").DataTable({
       targets: 8,
       visible: false,
     },
-    { width: "200px", targets: 1 },    {
+    { width: "200px", targets: 1 },
+    {
       searchPanes: {
         options: [
           {
@@ -179,9 +175,25 @@ let table = $("#collection_table").DataTable({
       searchPanes: {
         dtOpts: {
           scrollY: "100%",
-        }
+        },
       },
       targets: [5],
+    },
+    {
+      searchPanes: {
+        dtOpts: {
+          order: [[1, "desc"]], // Sorts panes from most to least for Curator
+        },
+      },
+      targets: [5], // Column index for Curator
+    },
+    {
+      searchPanes: {
+        dtOpts: {
+          order: [[1, "desc"]], // Sorts panes from most to least for Connector Type
+        },
+      },
+      targets: [6], // Column index for Connector Type
     },
   ],
 });

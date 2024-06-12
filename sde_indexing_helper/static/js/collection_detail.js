@@ -2,7 +2,7 @@ var collection_id;
 var newDivisionVal;
 var currentDivisionVal;
 var currentDivisonText;
-var currentUrlToDelete; 
+var currentUrlToDelete;
 
 let originalValue = document.getElementById("github-link-display").textContent;
 document.getElementById("github-link-form").style.display = "none";
@@ -54,15 +54,13 @@ function postDocTypeChange(collection_id, docType) {
   });
 }
 
-
 // Toast for changing workflow status
-$(document).ready(function() {
+$(document).ready(function () {
   if (localStorage.getItem("WorkflowStatusChange")) {
     toastr.success("Workflow Status Updated!");
-    localStorage.removeItem("WorkflowStatusChange")
-
+    localStorage.removeItem("WorkflowStatusChange");
   }
-})
+});
 
 //////////////////////////////
 ///// DELETE URL CHANGE //////
@@ -299,48 +297,49 @@ function checkArrows() {
   const maxScrollLeft = $timeline[0].scrollWidth - $timeline[0].clientWidth;
 
   if (scrollLeft === 0) {
-      $('#left-arrow').hide();
+    $("#left-arrow").hide();
   } else {
-      $('#left-arrow').show();
+    $("#left-arrow").show();
   }
 
   if (scrollLeft >= maxScrollLeft) {
-      $('#right-arrow').hide();
+    $("#right-arrow").hide();
   } else {
-      $('#right-arrow').show();
+    $("#right-arrow").show();
   }
 }
 
 // Clicking on left right arrows to move timeline
-$(document).ready(function() {
-  $("#left-arrow").click(function() {
-      $("#timeline").scrollLeft($("#timeline").scrollLeft() - 510);
-      checkArrows();
+$(document).ready(function () {
+  $("#left-arrow").click(function () {
+    $("#timeline").scrollLeft($("#timeline").scrollLeft() - 510);
+    checkArrows();
   });
 
-  $("#right-arrow").click(function() {
-      $("#timeline").scrollLeft($("#timeline").scrollLeft() + 510);
-      checkArrows();
+  $("#right-arrow").click(function () {
+    $("#timeline").scrollLeft($("#timeline").scrollLeft() + 510);
+    checkArrows();
   });
 });
 
 $timeline.on("scroll", checkArrows);
 
-
 // Scroll to center the highlighted cell
 function centerHighlighted() {
-    const $timeline = $("#timeline");
-    const $highlighted = $timeline.find(".highlight");
-    
-    if ($highlighted.length) {
-        const timelineWidth = $timeline.width();
-        const highlightedOffset = $highlighted.offset().left - $timeline.offset().left;
-        const highlightedWidth = $highlighted.outerWidth(true);
-        const scrollLeft = $timeline.scrollLeft();
-        const centerPosition = highlightedOffset - (timelineWidth / 2) + (highlightedWidth / 2);
-        
-        $timeline.scrollLeft(scrollLeft + centerPosition);
-    }
+  const $timeline = $("#timeline");
+  const $highlighted = $timeline.find(".highlight");
+
+  if ($highlighted.length) {
+    const timelineWidth = $timeline.width();
+    const highlightedOffset =
+      $highlighted.offset().left - $timeline.offset().left;
+    const highlightedWidth = $highlighted.outerWidth(true);
+    const scrollLeft = $timeline.scrollLeft();
+    const centerPosition =
+      highlightedOffset - timelineWidth / 2 + highlightedWidth / 2;
+
+    $timeline.scrollLeft(scrollLeft + centerPosition);
+  }
 }
 
 centerHighlighted();
